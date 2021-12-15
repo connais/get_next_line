@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: avaures <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/04 12:53:15 by avaures           #+#    #+#             */
-/*   Updated: 2021/12/15 11:59:26 by avaures          ###   ########.fr       */
+/*   Created: 2021/12/15 11:22:03 by avaures           #+#    #+#             */
+/*   Updated: 2021/12/15 11:53:18 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,27 +74,27 @@ char	*get_next_line(int fd)
 {
 	int			nb;
 	char		buffer[BUFFER_SIZE + 1];
-	char static	*str = NULL;
+	char static	*str[1024];
 	char		*res;
 
 	nb = 1;
-	while (!ft_strchr(str, '\n') && nb > 0)
+	while (!ft_strchr(str[fd], '\n') && nb > 0)
 	{
 		nb = read(fd, buffer, BUFFER_SIZE);
 		if (fd < 0 || fd > 1024 || BUFFER_SIZE < 1 || nb == -1)
 			return (NULL);
-		str = ft_strjoin(str, buffer, nb);
+		str[fd] = ft_strjoin(str[fd], buffer, nb);
 	}
-	if (ft_strlen(str) == 0 || (nb == 0 && !str))
-		return (str = check_get(str));
-	if (nb == 0 && str)
+	if (ft_strlen(str[fd]) == 0 || (nb == 0 && !str[fd]))
+		return (str[fd] = check_get(str[fd]));
+	if (nb == 0 && str[fd])
 	{
-		res = ft_found(str);
-		free(str);
-		str = NULL;
+		res = ft_found(str[fd]);
+		free(str[fd]);
+		str[fd] = NULL;
 		return (res);
 	}
-	res = ft_found(str);
-	str = ft_newstr(str);
+	res = ft_found(str[fd]);
+	str[fd] = ft_newstr(str[fd]);
 	return (res);
 }
